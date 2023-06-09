@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Phonetics, Response } from '../models/response.svelte';
-	import Header from './components/Header.svelte';
-	import Spinner from './components/Spinner.svelte';
+	import Header from '../components/Header.svelte';
+	import Spinner from '../components/Spinner.svelte';
 
 	let word: string;
 	let data: Response[] = [];
