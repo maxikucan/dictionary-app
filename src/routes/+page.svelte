@@ -1,11 +1,13 @@
 <script lang="ts">
 	import type { Phonetics, Response } from '../models/response.svelte';
+	import Header from './components/Header.svelte';
+	import Spinner from './components/Spinner.svelte';
 
 	let word: string;
 	let data: Response[] = [];
 	let isLoading: boolean = false;
 
-	async function fetchWord(word: string): Promise<any> {
+	async function fetchWord(word: string): Promise<void> {
 		const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
 		data = await response.json();
 		isLoading = false;
@@ -13,25 +15,21 @@
 		console.log(data);
 	}
 
-	function playSound(arr: Phonetics[]) {
-		const url = arr.find((el: Phonetics) => el.audio.length > 1);
+	function playSound(phonetics: Phonetics[]) {
+		const url = phonetics.find(phonetic => phonetic.audio.length > 1);
 
 		const a = new Audio(url?.audio);
 		a.play();
 	}
 
-	function phoneticString(arr: Response): string {
-		const phonetic = arr?.phonetics?.find((el: any) => !!el.text)!.text;
+	function phoneticString(data: Response): string {
+		const phonetic = data?.phonetics?.find(el => !!el.text)!.text;
 
-		return arr.phonetic || phonetic;
+		return data.phonetic || phonetic;
 	}
 </script>
 
-<svelte:head>
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
-	<title>Dictionary App</title>
-</svelte:head>
+<Header />
 
 <div class="counter">
 	<h1>Dictionary App</h1>
@@ -52,7 +50,7 @@
 	</div>
 
 	{#if isLoading}
-		<p>...Searching 😎</p>
+		<Spinner />
 	{/if}
 
 	{#if !isLoading}
