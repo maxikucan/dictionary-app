@@ -8,6 +8,11 @@
 		sourceUrls: string[];
 	}
 
+	export interface ErrorResponse {
+		title: string;
+		message: string;
+	}
+
 	export interface Phonetics {
 		text: string;
 		audio: string;

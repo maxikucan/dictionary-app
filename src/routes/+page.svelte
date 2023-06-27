@@ -1,19 +1,26 @@
 <script lang="ts">
-	import type { Phonetics, Response } from '../models/response.svelte';
+	import type { Response, ErrorResponse } from '../models/response.svelte';
 	import Header from '../components/Header.svelte';
 	import Spinner from '../components/Spinner.svelte';
 	import Results from '../components/Results.svelte';
 
 	let word: string;
 	let data: Response[] = [];
+	let error: ErrorResponse;
 	let isLoading: boolean = false;
 
 	async function fetchWord(word: string): Promise<void> {
-		const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
-		data = await response.json();
-		isLoading = false;
+		try {
+			const response = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`);
+			data = await response.json();
+			isLoading = false;
 
-		console.log(data);
+			if (!Array.isArray(data)) {
+				error = data;
+			}
+		} catch (e) {
+			console.error(e);
+		}
 	}
 </script>
 
@@ -42,9 +49,16 @@
 	{/if}
 
 	{#if !isLoading}
-		{#each data as wordData}
-			<Results {wordData} />
-		{/each}
+		{#if !!error}
+			<h3>{error.title}</h3>
+			<p>{error.message}</p>
+		{/if}
+
+		{#if !error}
+			{#each data as wordData}
+				<Results {wordData} />
+			{/each}
+		{/if}
 	{/if}
 </main>
 
