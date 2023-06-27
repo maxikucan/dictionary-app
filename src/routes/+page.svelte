@@ -2,6 +2,7 @@
 	import type { Phonetics, Response } from '../models/response.svelte';
 	import Header from '../components/Header.svelte';
 	import Spinner from '../components/Spinner.svelte';
+	import Results from '../components/Results.svelte';
 
 	let word: string;
 	let data: Response[] = [];
@@ -14,30 +15,17 @@
 
 		console.log(data);
 	}
-
-	function playSound(phonetics: Phonetics[]) {
-		const url = phonetics.find(phonetic => phonetic.audio.length > 1);
-
-		const a = new Audio(url?.audio);
-		a.play();
-	}
-
-	function phoneticString(data: Response): string {
-		const phonetic = data?.phonetics?.find(el => !!el.text)!.text;
-
-		return data.phonetic || phonetic;
-	}
 </script>
 
 <Header />
 
-<div class="counter">
+<main class="app-container">
 	<h1>Dictionary App</h1>
 
-	<div style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
+	<section style="display: flex; flex-direction: column; justify-content: center; align-items: center;">
 		<input bind:value={word} />
 		<button
-			style="cursor: pointer; margin-top: 1rem;"
+			class="search-btn"
 			on:click={() => {
 				if (!!word) {
 					isLoading = true;
@@ -47,7 +35,7 @@
 		>
 			Search
 		</button>
-	</div>
+	</section>
 
 	{#if isLoading}
 		<Spinner />
@@ -55,43 +43,10 @@
 
 	{#if !isLoading}
 		{#each data as wordData}
-			<hr style="width: 100%" />
-
-			<div>
-				<div style="width: 100%; display: flex; justify-content: space-between;">
-					<h3 style="font-size: 30px;">
-						{wordData.word}
-					</h3>
-
-					<button style="font-size: 20px;" class="audio-btn" on:click={() => playSound(wordData.phonetics)}>
-						<img src="/audio.svg" alt="audio icon" />
-					</button>
-				</div>
-
-				<h4 style="color: brown;">
-					{phoneticString(wordData)}
-				</h4>
-
-				{#each wordData.meanings as meaning}
-					<h4>
-						{meaning.partOfSpeech}
-					</h4>
-
-					<ul style="list-style: none;">
-						{#each meaning.definitions as definition}
-							<li style="margin: 1rem 0">{definition.definition}</li>
-						{/each}
-					</ul>
-				{/each}
-
-				<div style="margin: 2rem 0">
-					<span style="font-weight: bold;">Source:</span>
-					<a href={wordData.sourceUrls[0]}>{wordData.sourceUrls[0]}</a>
-				</div>
-			</div>
+			<Results {wordData} />
 		{/each}
 	{/if}
-</div>
+</main>
 
 <style>
 	:root {
@@ -107,18 +62,15 @@
 		min-width: 50vw;
 	}
 
-	img {
-		width: 50px;
-	}
-
-	.counter {
+	.app-container {
+		min-height: 80vh;
 		display: flex;
 		flex-direction: column;
-		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+		justify-content: center;
 		margin: 1rem 0;
 	}
 
-	.counter button {
+	.search-btn {
 		min-width: 2em;
 		padding: 5px;
 		border-radius: 8px;
@@ -129,14 +81,11 @@
 		background-color: transparent;
 		touch-action: manipulation;
 		font-size: 2rem;
-		margin-bottom: 1rem;
-	}
-
-	.counter button:hover {
-		background-color: var(--color-bg-1);
-	}
-
-	.audio-btn {
+		margin: 1rem 0;
 		cursor: pointer;
+	}
+
+	.search-btn:hover {
+		background-color: #5e5e5e10;
 	}
 </style>
