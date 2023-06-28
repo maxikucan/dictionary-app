@@ -12,14 +12,18 @@
 	}
 
 	function phoneticString(data: Response): string {
-		const phonetic = data?.phonetics?.find((el) => !!el.text)!.text;
+		let phonetic;
 
-		return data.phonetic || phonetic;
+		if (data.phonetics.length) {
+			phonetic = data?.phonetics?.find((el) => !!el.text)!.text;
+		}
+
+		return data.phonetic || phonetic || '';
 	}
 </script>
 
-<section>
-	<div>
+<section class="results-container">
+	<div class="word-result">
 		<h3>
 			{wordData.word}
 		</h3>
@@ -29,7 +33,7 @@
 		</button>
 	</div>
 
-	<h4 style="color: brown;">
+	<h4>
 		{phoneticString(wordData)}
 	</h4>
 
@@ -37,18 +41,57 @@
 		<Definitions {meaning} />
 	{/each}
 
-	<div>
+	<div class="source">
+		<hr style="margin: 1rem 0;"/>
+
 		<span>Source: </span>
 		<a href={wordData.sourceUrls[0]}>{wordData.sourceUrls[0]}</a>
 	</div>
 </section>
 
 <style>
+	.results-container {
+		width: 95%;
+		margin: 0 auto;
+		padding: 10px 5px;
+		border-bottom: solid 1px #343a4021;
+	}
+
+	.word-result {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 1rem;
+	}
+
+	.word-result h3 {
+		font-size: 25px;
+	}
+
+	h4 {
+		color: brown;
+		margin: 1rem 0;
+	}
+
 	img {
 		width: 50px;
 	}
 
 	.audio-btn {
 		cursor: pointer;
+	}
+
+	.source {
+		margin: 1rem 0;
+	}
+
+	span {
+		font-weight: bold;
+	}
+
+	@media (min-width: 1200px) {
+		.results-container {
+			width: 40%;
+		}
 	}
 </style>
