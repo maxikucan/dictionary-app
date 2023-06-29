@@ -128,13 +128,17 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
-		width: 40%;
+		width: 90%;
 		margin: 1rem auto;
 	}
 
 	@media (min-width: 980px) {
 		.search {
 			min-width: 50rem;
+		}
+
+		.error-text {
+			width: 40%;
 		}
 	}
 </style>
