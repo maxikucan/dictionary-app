@@ -20,6 +20,10 @@
 
 		return data.phonetic || phonetic || '';
 	}
+
+	function audioExists(phonetics: Phonetics[]){
+		return !!phonetics.find((phonetic) => phonetic.audio.length > 1)
+	}
 </script>
 
 <section class="results-container">
@@ -28,9 +32,11 @@
 			{wordData.word}
 		</h3>
 
-		<button class="audio-btn" on:click={() => playSound(wordData.phonetics)}>
-			<img src="/audio.svg" alt="audio icon" />
-		</button>
+		{#if audioExists(wordData.phonetics)}
+			<button class="audio-btn" on:click={() => playSound(wordData.phonetics)}>
+				<img src="/audio.svg" alt="audio icon" />
+			</button>
+		{/if}
 	</div>
 
 	<h4>
@@ -42,7 +48,7 @@
 	{/each}
 
 	<div class="source">
-		<hr style="margin: 1rem 0;"/>
+		<hr style="margin: 1rem 0;" />
 
 		<span>Source: </span>
 		<a href={wordData.sourceUrls[0]}>{wordData.sourceUrls[0]}</a>
