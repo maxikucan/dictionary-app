@@ -14,15 +14,19 @@
 	function phoneticString(data: Response): string {
 		let phonetic;
 
-		if (data.phonetics.length) {
+		if (data.phonetics.length && phoneticExists(data.phonetics)) {
 			phonetic = data?.phonetics?.find((el) => !!el.text)!.text;
 		}
 
 		return data.phonetic || phonetic || '';
 	}
 
-	function audioExists(phonetics: Phonetics[]){
-		return !!phonetics.find((phonetic) => phonetic.audio.length > 1)
+	function audioExists(phonetics: Phonetics[]) {
+		return !!phonetics.find((phonetic) => phonetic.audio.length > 1);
+	}
+
+	function phoneticExists(phonetics: Phonetics[]) {
+		return !!phonetics.find((phonetic) => phonetic.text);
 	}
 </script>
 
